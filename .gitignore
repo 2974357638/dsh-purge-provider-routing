@@ -1,0 +1,9 @@
+node_modules/
+*.tgz
+*.zip
+.env
+.env.*
+!.env.example
+.credentials*
+*.log
+.DS_Store
