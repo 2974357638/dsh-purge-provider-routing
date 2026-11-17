@@ -1,51 +1,40 @@
 <div align="center">
 
-# dsh-purge Community
+# dsh-go · ChatGPT 提示词注入跳过版
 
-**让 AI 更专注地辅助你的学习与动手实验。**
+**适用于 dsh-go：默认跳过 ChatGPT 的插件提示词注入，保留 DeepSeek 等其他提供方的原有注入行为。**
 
-给 DeepSeek Harness 的自托管控件（俗称「破甲」插件）· 86 条宿主补丁 · 25 层状态自检 · 左侧栏整页设置
+按模型提供方分别处理，让 ChatGPT 与 DeepSeek 使用各自的提示词配置。
 
-[![Release](https://img.shields.io/github/v/release/kingcharleslzy-ai/dsh-purge?label=release)](https://github.com/kingcharleslzy-ai/dsh-purge/releases)
-[![Checks](https://github.com/kingcharleslzy-ai/dsh-purge/actions/workflows/community.yml/badge.svg)](https://github.com/kingcharleslzy-ai/dsh-purge/actions/workflows/community.yml)
+[下载修改版](https://github.com/2974357638/dsh-purge-provider-routing/releases/tag/v1.6.84-provider-routing.1) · [配置说明](PROVIDER-ROUTING.md) · [MIT 许可证](LICENSE)
 
-当前版本 **1.6.84** · 适配 **DSH Desktop 0.2.2-rc.1**（0.2.1-rc.1 / rc.2 / rc.3 / rc.5 同样通过） · [English](docs/README.en.md)
+基于 `dsh-purge-community` **1.6.84** 的非官方修改版，主要新增 provider 级提示词注入过滤。
 
-1.6.84 为已授权测试入口增加一次性命令执行挑战，区分文件写入与命令执行。[发行说明](https://github.com/kingcharleslzy-ai/dsh-purge/releases/tag/v1.6.84)。
-
-**原项目与作者**：基于 [小杨 / YuJunZhiXue 的 dsh-purge](https://github.com/YuJunZhiXue/dsh-purge) 独立维护。原仓库已恢复；保留原作者署名、版权与 MIT 许可证。社区版由本仓库维护，并非原作者官方发行。
+**来源与署名**：基于 [kingcharleslzy-ai/dsh-purge](https://github.com/kingcharleslzy-ai/dsh-purge)，保留原作者 [小杨 / YuJunZhiXue](https://github.com/YuJunZhiXue/dsh-purge) 及社区贡献者署名、版权与 MIT 许可证。
 
 </div>
 
 ---
 
-## 搭配：本机出图（Qwen Studio）
+## 适用于 dsh-go
 
-破甲之后最直接的玩法，是把「生图」也搬到本机——不用网页、不用会员、不把提示词发到别人服务器。
+面向在 **dsh-go 手机 App** 中同时使用 ChatGPT 与 DeepSeek 的场景。本修改在 dsh-go 连接的 **DSH 引擎侧**处理提示词注入，不修改手机原生界面。
 
-配套插件 **Qwen Studio**（`dsh-qwen-studio`）把 Qwen Image 2.1 接进 DSH：
+- 使用 **ChatGPT / Codex**（`openai-codex`）时，默认跳过 Purge 的提示词注入。
+- 切换到 **DeepSeek** 或其他未排除的提供方时，保留原有注入行为。
+- 使用远程主机时，需要在实际运行模型请求的主机上安装对应修改版。
+- 支持通过 `excludeProviders` 排除指定提供方，或通过 `injectProviders` 设置注入白名单。
 
-- **Apple Silicon Mac**：MLX / MFLUX 本机推理，模型用时加载、空闲释放；
-- **Windows / Linux + NVIDIA**：连你自己的 GPU 网关（ComfyUI 或 vLLM-Omni 协议），也支持 SSH 按需拉起；
-- 支持参考图编辑（按图改画风、换材质）、LoRA、ControlNet、蒙版、整套预设、图库与批量任务；
-- 装好之后，会话里直接说「画一张…」或「把这张改成水彩」，Agent 调用 `qwen_generate_image` 并把图返回到对话里。
+## 主要功能：跳过 ChatGPT 的提示词注入
 
-**组合效果**：破甲让 Agent 不再反复确认「要不要画」，出图插件让它真的画出来，全程在你自己的机器上完成。
+同一套插件提示词不一定适合每个模型。本修改版为提供方增加独立的注入判断：**识别到 ChatGPT 时跳过插件注入，DeepSeek 等其他提供方保持原配置**。
 
-**仓库**：[kingcharleslzy-ai/dsh-qwen-studio](https://github.com/kingcharleslzy-ai/dsh-qwen-studio) · **下载**：[最新 Releases](https://github.com/kingcharleslzy-ai/dsh-qwen-studio/releases/latest) · **安装与硬件自查**：[docs/SETUP.md](https://github.com/kingcharleslzy-ai/dsh-qwen-studio/blob/main/docs/SETUP.md)（先看「这台机器能不能跑」再动手）
+- 默认配置：`excludeProviders: [openai-codex]`。
+- 按当前请求或 Agent 的实际提供方判断，避免用全局“最后选择的模型”影响其他会话。
+- 可按需配置提供方排除列表或白名单，原有预设排除规则继续生效。
+- 这项修改只影响 Purge 提示词注入，不撤销插件原有的全局宿主补丁或权限配置，也不清理既有对话历史。
 
-## 它是什么
-
-dsh-purge Community 是一个跑在你自己机器上的 Harness 附加组件。它把日常使用里最消耗注意力的几件事收敛到一处：
-
-- **看清楚状态**：安装、补丁、注入到底有没有就绪，一条命令或一屏面板给结论；
-- **少一些往返**：把反复出现的确认与打断，收敛成一次设置；
-- **随时能回去**：应用、回滚、开关都留记录，操作前自动快照；
-- **方便做实验**：提示词、规则、预设集中管理，改坏了能撤。
-
-目标很简单：**让助手更连贯地配合你的学习与动手实验**，而不是每做一步都先停下来问一句。
-
-社区里通常把它叫作「破甲」或「无限制模式」插件——指的是它降低了交互层面的摩擦，让 agent 能连续执行任务；它不改模型本身，也不改变你要做的事。
+完整配置、13 项局部测试及行为边界见 [Provider Routing 说明](PROVIDER-ROUTING.md)。
 
 ### 下载时报 `fetch failed`？
 
@@ -72,9 +61,19 @@ dsh-purge Community 是一个跑在你自己机器上的 Harness 附加组件。
 
 修复独立安装器只显示 `fetch failed` 的问题：分阶段诊断、有限重试和系统 curl 备用下载，继续严格校验官方来源、证书和 SHA256。下载失败不触碰现有安装。[发行说明](docs/releases/1.6.48.md) · [配置与验收](docs/maintenance-issue-52.md)
 
-## 安装
+## 下载本修改版
 
-**DSH 官方入口负责安装插件；下面的社区安装器由本仓库维护，不是 DeepSeek 官方脚本。** 首次安装可用官方界面或 CLI；已经装过 `dsh-purge` / 旧独立面板时，用社区安装器原地迁移，不要先卸载。安装、应用宿主补丁、手动重启是独立动作。
+- [修改版发布页](https://github.com/2974357638/dsh-purge-provider-routing/releases/tag/v1.6.84-provider-routing.1)
+- [插件安装包](https://github.com/2974357638/dsh-purge-provider-routing/releases/download/v1.6.84-provider-routing.1/dsh-purge-community-1.6.84.tgz)
+- [SHA256 校验清单](https://github.com/2974357638/dsh-purge-provider-routing/releases/download/v1.6.84-provider-routing.1/SHA256SUMS)
+
+请使用上面的本仓库发行链接取得包含 ChatGPT 注入过滤的修改版。后续介绍更新不改变现有安装包的内容与 SHA256。
+
+## 上游安装与维护参考
+
+> 以下保留上游的安装、面板、命令与维护资料；其中的索引、脚本、兼容性声明和上游下载链接属于原项目。直接安装或更新上游包会覆盖本仓库修改，不会自动取得 ChatGPT 注入过滤功能。
+
+**DSH 官方入口负责安装插件；下面的社区安装器由上游社区项目维护，不是 DeepSeek 官方脚本。** 首次安装可用官方界面或 CLI；已经装过 `dsh-purge` / 旧独立面板时，用社区安装器原地迁移，不要先卸载。安装、应用宿主补丁、手动重启是独立动作。
 
 ### 方式一：DSH 官方界面（首次安装）
 
@@ -218,7 +217,7 @@ npm run smoke            # 发行包冒烟
 
 面向 AI agent 的操作说明在 [AGENTS.md](AGENTS.md)，两者冲突时以它为准。
 
-**关键词**：破甲 · 无限制模式 · unrestricted · prompt injection · jailbreak · DSH 插件 · 状态自检 · 备份回滚
+**关键词**：dsh-go · ChatGPT · DeepSeek · 提示词注入管理 · provider routing · DSH 插件
 
 ## 贡献者
 

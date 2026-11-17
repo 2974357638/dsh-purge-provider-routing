@@ -1,7 +1,7 @@
 {
   "name": "dsh-purge-community",
   "version": "1.6.84",
-  "description": "让 AI 更专注地辅助学习与动手实验：DSH 附加组件，提供状态自检、提示词与规则管理、本机备份与回滚。",
+  "description": "适用于 dsh-go 的提示词注入管理修改版：默认跳过 ChatGPT（openai-codex）的插件提示词注入，保留 DeepSeek 等其他提供方的原有注入行为。",
   "type": "module",
   "main": "lib/index.js",
   "exports": {
@@ -58,6 +58,10 @@
     "deepseek",
     "deepseek-harness",
     "dsh",
+    "dsh-go",
+    "chatgpt",
+    "openai-codex",
+    "provider-routing",
     "dsh-plugin",
     "purge-community",
     "prompt-management",
@@ -66,11 +70,7 @@
     "backup",
     "rollback",
     "compatibility",
-    "破甲",
-    "jailbreak",
-    "prompt-injection",
-    "无限制模式",
-    "unrestricted"
+    "prompt-injection"
   ],
   "repository": {
     "type": "git",

@@ -1,4 +1,6 @@
-# Provider routing 本地修改版
+# 适用于 dsh-go 的 ChatGPT 提示词注入跳过版
+
+**默认跳过 ChatGPT（`openai-codex`）的插件提示词注入，保留 DeepSeek 等其他提供方的原有注入行为。** 在 dsh-go 连接的 DSH 引擎侧按 provider 分别处理，不修改手机原生界面；使用远程主机时，应安装在实际处理模型请求的主机上。
 
 本仓库是 `dsh-purge-community` **1.6.84** 已安装发行包的源码快照，加上本地的 provider 级提示词注入过滤修改。它不是上游的完整开发仓库，不含上游全部测试、前端开发工程或 Git 历史，也不是上游官方发行。
 
